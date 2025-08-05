@@ -49,12 +49,13 @@ const MonetizationTips = () => {
     }
 
     // Search filter
-    if (searchQuery.trim()) {
+if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(article =>
-        article.title.toLowerCase().includes(query) ||
-        article.description.toLowerCase().includes(query) ||
-        article.tags.some(tag => tag.toLowerCase().includes(query))
+        article.title?.toLowerCase().includes(query) ||
+        article.description?.toLowerCase().includes(query) ||
+        (Array.isArray(article.Tags) ? article.Tags : (article.tags || []))
+          .some(tag => tag?.toLowerCase().includes(query))
       );
     }
 
@@ -217,11 +218,12 @@ const MonetizationTips = () => {
                     {article.description}
                   </Text>
 
-                  {/* Tags */}
+{/* Tags */}
                   <div className="flex flex-wrap gap-1 mb-4">
-                    {article.tags.slice(0, 3).map((tag) => (
+                    {(Array.isArray(article.Tags) ? article.Tags : (article.tags || []))
+                      .slice(0, 3).map((tag, index) => (
                       <span
-                        key={tag}
+                        key={`${tag}-${index}`}
                         className="px-2 py-1 bg-slate-700 text-slate-300 rounded text-xs"
                       >
                         #{tag}

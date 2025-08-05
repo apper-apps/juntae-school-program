@@ -37,11 +37,10 @@ const MembershipVideos = () => {
 // Filter videos based on search term and selected category
   const filteredVideos = useMemo(() => {
     if (!videos) return [];
-    
-    return videos.filter(video => {
+return videos.filter(video => {
       const matchesSearch = searchTerm === "" || 
-        video.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        video.instructor.toLowerCase().includes(searchTerm.toLowerCase());
+        video.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        video.instructor?.toLowerCase().includes(searchTerm.toLowerCase());
       
       const matchesCategory = selectedCategory === "" || 
         video.category === selectedCategory;
