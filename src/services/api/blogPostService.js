@@ -2,6 +2,129 @@ import { toast } from 'react-toastify';
 
 const tableName = 'blog_post';
 
+function getApperClient() {
+  const { ApperClient } = window.ApperSDK;
+  return new ApperClient({
+    apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+    apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+  });
+}
+
+const blogPostService = {
+  async getAll() {
+    try {
+      const apperClient = getApperClient();
+      
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "title" } },
+          { field: { Name: "description" } },
+          { field: { Name: "thumbnail" } },
+          { field: { Name: "content" } },
+          { field: { Name: "author" } },
+          { field: { Name: "publishedDate" } },
+          { field: { Name: "category" } },
+          { field: { Name: "readTime" } },
+          { field: { Name: "views" } },
+          { field: { Name: "featured" } }
+        ],
+        orderBy: [
+          {
+            fieldName: "publishedDate",
+            sorttype: "DESC"
+          }
+        ],
+        pagingInfo: {
+          limit: 50,
+          offset: 0
+        }
+      };
+      
+      const response = await apperClient.fetchRecords(tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return [];
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching blog posts:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
+  },
+
+  async create(postData) {
+    try {
+      const apperClient = getApperClient();
+      
+      // Only include Updateable fields
+      const params = {
+        records: [{
+          title: postData.title,
+          description: postData.description || '',
+          thumbnail: postData.thumbnail || '',
+          content: postData.content,
+          author: postData.author,
+          publishedDate: postData.publishedDate,
+          category: postData.category || 'Other',
+          readTime: postData.readTime || 5,
+          views: 0,
+          featured: false
+        }]
+      };
+      
+      const response = await apperClient.createRecord(tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return null;
+      }
+      
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create blog post ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          
+          failedRecords.forEach(record => {
+            record.errors?.forEach(error => {
+              toast.error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) toast.error(record.message);
+          });
+        }
+        
+        if (successfulRecords.length > 0) {
+          return successfulRecords[0].data;
+        }
+      }
+      
+      return null;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating blog post:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return null;
+    }
+  }
+};
+
+export default blogPostService;
+import { toast } from 'react-toastify';
+
+const tableName = 'blog_post';
+
 // Initialize ApperClient
 const getApperClient = () => {
   const { ApperClient } = window.ApperSDK;

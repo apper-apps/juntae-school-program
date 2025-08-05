@@ -47,9 +47,7 @@ const MoneyInsights = () => {
   };
 
 const handleWritePost = () => {
-    // Navigate to write post page (will be implemented)
-    toast.success("글쓰기 페이지로 이동합니다.");
-    console.log("Navigate to write post page");
+    navigate('/insights/create');
   };
 
   if (loading) return <Loading />;
