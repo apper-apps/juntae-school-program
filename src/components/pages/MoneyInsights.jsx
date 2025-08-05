@@ -102,7 +102,10 @@ return (
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: 0.2 + index * 0.1 }}
                   >
-                    <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 group cursor-pointer">
+<Card 
+                      className="overflow-hidden hover:shadow-xl transition-all duration-300 group cursor-pointer"
+                      onClick={() => navigate(`/insights/${post.Id}`)}
+                    >
                       <div className="aspect-video bg-gradient-to-br from-slate-700 to-slate-800 relative overflow-hidden">
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                         <div className="absolute top-4 left-4">
@@ -168,7 +171,10 @@ return (
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.4 + index * 0.05 }}
               >
-                <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 group cursor-pointer h-full">
+<Card 
+                  className="overflow-hidden hover:shadow-xl transition-all duration-300 group cursor-pointer h-full"
+                  onClick={() => navigate(`/insights/${post.Id}`)}
+                >
                   <div className="aspect-video bg-gradient-to-br from-slate-700 to-slate-800 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     <div className="absolute top-4 left-4">

@@ -9,6 +9,7 @@ import Layout from "@/components/organisms/Layout";
 import MembershipVideos from "@/components/pages/MembershipVideos";
 import MoneyInsights from "@/components/pages/MoneyInsights";
 import CreateBlogPost from "@/components/pages/CreateBlogPost";
+import BlogPostDetail from "@/components/pages/BlogPostDetail";
 import Reviews from "@/components/pages/Reviews";
 import MonetizationTips from '@/components/pages/MonetizationTips';
 import Login from '@/components/pages/Login';
@@ -132,8 +133,9 @@ function AppContent() {
         <Route path="/reset-password/:appId/:fields" element={<ResetPassword />} />
         <Route path="/" element={<Layout />}>
 <Route index element={<MembershipVideos />} />
-          <Route path="insights" element={<MoneyInsights />} />
+<Route path="insights" element={<MoneyInsights />} />
           <Route path="insights/create" element={<CreateBlogPost />} />
+          <Route path="insights/:id" element={<BlogPostDetail />} />
           <Route path="monetization-tips" element={<MonetizationTips />} />
           <Route path="reviews" element={<Reviews />} />
         </Route>
