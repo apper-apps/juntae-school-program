@@ -47,12 +47,12 @@ const MembershipVideos = () => {
           멤버십 영상실
         </Text>
         <Text className="text-slate-400 max-w-2xl mx-auto">
+<Text className="text-slate-400 max-w-2xl mx-auto">
           텍스트 인플루언서가 되기 위한 전문 교육 콘텐츠를 만나보세요
         </Text>
       </div>
 
-{/* Video Cards Grid */}
-      {loading ? (
+      {/* Video Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
             <motion.div
@@ -72,7 +72,7 @@ const MembershipVideos = () => {
             </motion.div>
           ))}
         </div>
-) : error ? (
+      ) : error ? (
         <Error message={error} onRetry={loadVideos} />
       ) : !videos || videos.length === 0 ? (
         <Empty 
@@ -81,7 +81,7 @@ const MembershipVideos = () => {
           icon="Video"
         />
       ) : (
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {videos.map((video, index) => (
             <VideoCard
               key={video.Id}
@@ -90,9 +90,7 @@ const MembershipVideos = () => {
             />
           ))}
         </div>
-</div>
       )}
-
       {/* Coming Soon Features */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
