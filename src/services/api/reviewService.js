@@ -1,4 +1,6 @@
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
+import React from "react";
+import Error from "@/components/ui/Error";
 
 const tableName = 'review';
 
@@ -12,14 +14,16 @@ export const reviewService = {
       });
 
       const params = {
-        fields: [
-          { field: { Name: "Name" } },
-          { field: { Name: "Tags" } },
-          { field: { Name: "userName" } },
-          { field: { Name: "rating" } },
-          { field: { Name: "comment" } },
-          { field: { Name: "date" } }
-        ],
+fields: [
+	  { field: { Name: "Name" } },
+	  { field: { Name: "Tags" } },
+	  { field: { Name: "userName" } },
+	  { field: { Name: "rating" } },
+	  { field: { Name: "comment" } },
+	  { field: { Name: "date" } },
+	  { field: { Name: "likes" } },
+	  { field: { Name: "isAnonymous" } }
+	],
         orderBy: [
           {
             fieldName: "date",
@@ -94,15 +98,17 @@ export const reviewService = {
       });
 
       // Only include updateable fields
-      const params = {
-        records: [{
-          Name: review.Name,
-          Tags: review.Tags,
-          userName: review.userName,
-          rating: review.rating,
-          comment: review.comment,
-          date: review.date
-        }]
+const params = {
+		records: [{
+		  Name: review.Name || review.userName,
+		  Tags: review.Tags,
+		  userName: review.userName,
+		  rating: review.rating,
+		  comment: review.comment,
+		  date: review.date,
+		  likes: review.likes || 0,
+		  isAnonymous: review.isAnonymous || false
+		}]
       };
 
       const response = await apperClient.createRecord(tableName, params);
@@ -237,6 +243,68 @@ export const reviewService = {
     } catch (error) {
       if (error?.response?.data?.message) {
         console.error("Error deleting review:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+return false;
+    }
+  },
+
+  // Like a review
+  async likeReview(reviewId) {
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      // First get the current review to increment likes
+      const currentReview = await this.getById(reviewId);
+      if (!currentReview) {
+        throw new Error('Review not found');
+      }
+      
+      const currentLikes = currentReview.likes || 0;
+      
+      // Update with incremented likes
+      const params = {
+        records: [{
+          Id: parseInt(reviewId),
+          likes: currentLikes + 1
+        }]
+      };
+      
+      const response = await apperClient.updateRecord(tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return false;
+      }
+      
+      if (response.results) {
+        const successfulUpdates = response.results.filter(result => result.success);
+        const failedUpdates = response.results.filter(result => !result.success);
+        
+        if (failedUpdates.length > 0) {
+          console.error(`Failed to like review ${failedUpdates.length} records:${JSON.stringify(failedUpdates)}`);
+          
+          failedUpdates.forEach(record => {
+            record.errors?.forEach(error => {
+              toast.error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) toast.error(record.message);
+          });
+        }
+        
+        return successfulUpdates.length > 0;
+      }
+      
+      return false;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error liking review:", error?.response?.data?.message);
       } else {
         console.error(error.message);
       }
