@@ -1,0 +1,26 @@
+[
+  {
+    "Id": 1,
+    "title": "텍스트 인플루언서 기초 과정",
+    "instructor": "준태 선생님",
+    "duration": 120,
+    "thumbnail": "/api/placeholder/400/225",
+    "category": "기초"
+  },
+  {
+    "Id": 2,
+    "title": "브랜드 협업 전략과 노하우",
+    "instructor": "준태 선생님",
+    "duration": 90,
+    "thumbnail": "/api/placeholder/400/225",
+    "category": "중급"
+  },
+  {
+    "Id": 3,
+    "title": "수익화 극대화 방법론",
+    "instructor": "준태 선생님",
+    "duration": 150,
+    "thumbnail": "/api/placeholder/400/225",
+    "category": "고급"
+  }
+]
