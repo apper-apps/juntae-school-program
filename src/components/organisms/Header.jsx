@@ -1,15 +1,22 @@
 import React, { useState } from "react";
-import { cn } from "@/utils/cn";
+import ApperIcon from "@/components/ApperIcon";
 import Logo from "@/components/molecules/Logo";
 import NavigationItem from "@/components/molecules/NavigationItem";
 import Button from "@/components/atoms/Button";
-import ApperIcon from "@/components/ApperIcon";
+import { cn } from "@/utils/cn";
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  // Authentication state - replace with your actual auth hook/context
+  const isAuthenticated = false; // TODO: Replace with actual auth state
+  const logout = () => {
+    // TODO: Implement actual logout functionality
+    console.log('Logout clicked');
+  };
 
 const navigationItems = [
-    { path: "/", label: "멤버십 영상실" },
+    { path: "/", label: "홈" },
     { path: "/insights", label: "머니 인사이트" },
     { path: "/monetization-tips", label: "수익화 팁" },
     { path: "/reviews", label: "리뷰" },
@@ -28,7 +35,7 @@ const navigationItems = [
             <Logo />
           </div>
 
-          {/* Desktop Navigation */}
+{/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-1">
             {navigationItems.map((item) => (
               <NavigationItem key={item.path} to={item.path}>
@@ -36,6 +43,24 @@ const navigationItems = [
               </NavigationItem>
             ))}
           </nav>
+
+          {/* Login/Logout Link */}
+          <div className="hidden md:flex items-center">
+            {isAuthenticated ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={logout}
+                className="text-surface-100 hover:text-primary-500 transition-colors duration-200"
+              >
+                로그아웃
+              </Button>
+            ) : (
+              <NavigationItem to="/login">
+                로그인
+              </NavigationItem>
+            )}
+          </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">
