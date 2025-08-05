@@ -8,9 +8,10 @@ import ApperIcon from "@/components/ApperIcon";
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const navigationItems = [
+const navigationItems = [
     { path: "/", label: "멤버십 영상실" },
     { path: "/insights", label: "머니 인사이트" },
+    { path: "/monetization-tips", label: "수익화 팁" },
     { path: "/reviews", label: "리뷰" },
   ];
 
