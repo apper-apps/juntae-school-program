@@ -8,7 +8,7 @@ const Card = React.forwardRef(({
   gradient = false,
   ...props 
 }, ref) => {
-  const baseStyles = "bg-surface-800 rounded-xl border border-slate-700 shadow-lg overflow-hidden";
+const baseStyles = "bg-surface-800 rounded-xl border border-slate-700 shadow-lg";
   const hoverStyles = hover ? "transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] hover:border-primary-500/30 cursor-pointer" : "";
   const gradientStyles = gradient ? "bg-gradient-to-br from-surface-800 to-slate-800" : "";
   
