@@ -12,7 +12,7 @@ export const videoService = {
       });
 
       const params = {
-        fields: [
+fields: [
           { field: { Name: "Name" } },
           { field: { Name: "Tags" } },
           { field: { Name: "title" } },
@@ -25,7 +25,8 @@ export const videoService = {
           { field: { Name: "uploadDate" } },
           { field: { Name: "views" } },
           { field: { Name: "rating" } },
-          { field: { Name: "progress" } }
+          { field: { Name: "progress" } },
+          { field: { Name: "embedURL" } }
         ],
         orderBy: [
           {
@@ -63,7 +64,7 @@ export const videoService = {
       });
 
       const params = {
-        fields: [
+fields: [
           { field: { Name: "Name" } },
           { field: { Name: "Tags" } },
           { field: { Name: "title" } },
@@ -76,7 +77,8 @@ export const videoService = {
           { field: { Name: "uploadDate" } },
           { field: { Name: "views" } },
           { field: { Name: "rating" } },
-          { field: { Name: "progress" } }
+          { field: { Name: "progress" } },
+          { field: { Name: "embedURL" } }
         ]
       };
 
@@ -109,7 +111,7 @@ export const videoService = {
 
       // Only include updateable fields
       const params = {
-        records: [{
+records: [{
           Name: video.Name,
           Tags: video.Tags,
           title: video.title,
@@ -122,7 +124,8 @@ export const videoService = {
           uploadDate: video.uploadDate,
           views: video.views || 0,
           rating: video.rating || 0,
-          progress: video.progress || 0
+          progress: video.progress || 0,
+          embedURL: video.embedURL
         }]
       };
 
@@ -170,7 +173,7 @@ export const videoService = {
       });
 
       // Only include updateable fields
-      const updateData = {
+const updateData = {
         Id: parseInt(id)
       };
 
@@ -188,7 +191,7 @@ export const videoService = {
       if (updatedVideo.views !== undefined) updateData.views = updatedVideo.views;
       if (updatedVideo.rating !== undefined) updateData.rating = updatedVideo.rating;
       if (updatedVideo.progress !== undefined) updateData.progress = updatedVideo.progress;
-
+      if (updatedVideo.embedURL !== undefined) updateData.embedURL = updatedVideo.embedURL;
       const params = {
         records: [updateData]
       };

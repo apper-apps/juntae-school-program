@@ -1,22 +1,25 @@
-import React, { useEffect, useState, useMemo } from 'react'
-import { motion } from 'framer-motion'
-import { videoService } from '@/services/api/videoService'
-import PlaceholderCard from '@/components/molecules/PlaceholderCard'
-import Loading from '@/components/ui/Loading'
-import Error from '@/components/ui/Error'
-import Empty from '@/components/ui/Empty'
-import Text from '@/components/atoms/Text'
-import Card from '@/components/atoms/Card'
-import ProgressBar from '@/components/atoms/ProgressBar'
-import Button from '@/components/atoms/Button'
-import ApperIcon from '@/components/ApperIcon'
+import React, { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { videoService } from "@/services/api/videoService";
+import ApperIcon from "@/components/ApperIcon";
+import PlaceholderCard from "@/components/molecules/PlaceholderCard";
+import Loading from "@/components/ui/Loading";
+import Error from "@/components/ui/Error";
+import Empty from "@/components/ui/Empty";
+import Button from "@/components/atoms/Button";
+import Text from "@/components/atoms/Text";
+import Card from "@/components/atoms/Card";
+import ProgressBar from "@/components/atoms/ProgressBar";
 
 const MembershipVideos = () => {
-  const [videos, setVideos] = useState([]);
+const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
   const loadVideos = async () => {
     try {
       setLoading(true);
@@ -49,11 +52,20 @@ return videos.filter(video => {
     });
   }, [videos, searchTerm, selectedCategory]);
 
-  const clearFilters = () => {
+const clearFilters = () => {
     setSearchTerm("");
     setSelectedCategory("");
   };
 
+  const handleVideoClick = (video) => {
+    setSelectedVideo(video);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedVideo(null);
+  };
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -194,10 +206,11 @@ filteredVideos.length === 0 ? (
         ) : (
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredVideos.map((video, index) => (
-              <VideoCard
+<VideoCard
                 key={video.Id}
                 video={video}
                 index={index}
+                onVideoClick={handleVideoClick}
               />
             ))}
           </div>
@@ -251,22 +264,157 @@ filteredVideos.length === 0 ? (
               </div>
             </div>
           </div>
-        </Card>
+</Card>
+      </motion.div>
+      
+      {/* Video Modal */}
+      {showModal && selectedVideo && (
+        <VideoModal
+          video={selectedVideo}
+          onClose={handleCloseModal}
+        />
+      )}
+    </motion.div>
+  );
+};
+
+// Video Modal Component
+const VideoModal = ({ video, onClose }) => {
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [onClose]);
+
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+      onClick={handleBackdropClick}
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        className="bg-surface-800 rounded-2xl overflow-hidden max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-surface-700">
+<div>
+            <Text variant="h3" className="text-surface-50 mb-2">
+              {video.title || video.Name}
+            </Text>
+            <Text variant="body2" className="text-surface-400">
+              {video.instructor} • {video.duration ? formatDuration(video.duration) : 'Duration N/A'}
+            </Text>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="text-surface-400 hover:text-surface-50"
+          >
+            <ApperIcon name="X" size={20} />
+          </Button>
+        </div>
+
+        {/* Video Player */}
+        <div className="aspect-video bg-black">
+          {video.embedURL ? (
+            <iframe
+              src={video.embedURL}
+              title={video.title || video.Name}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-surface-400">
+              <div className="text-center">
+                <ApperIcon name="Play" size={48} className="mx-auto mb-4 opacity-50" />
+                <Text variant="body1">No video URL available</Text>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Video Info */}
+        <div className="p-6">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center gap-2">
+              <ApperIcon name="Eye" size={16} className="text-surface-400" />
+              <Text variant="body2" className="text-surface-400">
+                {video.views?.toLocaleString() || 0} views
+              </Text>
+            </div>
+            <div className="flex items-center gap-2">
+              <ApperIcon name="Star" size={16} className="text-accent-500" />
+              <Text variant="body2" className="text-surface-400">
+                {video.rating || 0}/5
+              </Text>
+            </div>
+            <div className="flex items-center gap-2">
+              <ApperIcon name="BookOpen" size={16} className="text-surface-400" />
+              <Text variant="body2" className="text-surface-400">
+                {video.difficulty}
+              </Text>
+            </div>
+          </div>
+
+          {video.description && (
+            <div className="mb-4">
+              <Text variant="body1" className="text-surface-300 leading-relaxed">
+                {video.description}
+              </Text>
+            </div>
+          )}
+
+          {video.progress > 0 && (
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <Text variant="body2" className="text-surface-400">
+                  Progress
+                </Text>
+                <Text variant="body2" className="text-surface-400">
+                  {video.progress}%
+                </Text>
+              </div>
+              <ProgressBar progress={video.progress} />
+            </div>
+          )}
+        </div>
       </motion.div>
     </motion.div>
   );
-}
+};
+
+// Helper function for duration formatting
+const formatDuration = (minutes) => {
+  if (!minutes) return '0분';
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  if (hours > 0) {
+    return `${hours}시간 ${mins}분`;
+  }
+  return `${mins}분`;
+};
 
 // VideoCard Component
-const VideoCard = ({ video, index }) => {
-  const formatDuration = (minutes) => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    if (hours > 0) {
-      return `${hours}시간 ${mins}분`;
-    }
-    return `${mins}분`;
-  };
+const VideoCard = ({ video, index, onVideoClick }) => {
 
   const getCategoryColor = (category) => {
     switch (category) {
@@ -287,52 +435,74 @@ const VideoCard = ({ video, index }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.1 }}
     >
-      <Card hover className="overflow-hidden group">
+<Card hover className="overflow-hidden group">
         {/* Thumbnail */}
-        <div className="relative aspect-video overflow-hidden">
-          <img
-            src={video.thumbnail}
-            alt={video.title}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+        <div className="relative aspect-video bg-surface-700 overflow-hidden">
+          {video.thumbnail ? (
+            <img
+              src={video.thumbnail}
+              alt={video.title || video.Name}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <ApperIcon name="Play" size={32} className="text-surface-500" />
+            </div>
+          )}
           
-          {/* Duration Badge */}
-          <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">
-            {formatDuration(video.duration)}
-          </div>
+          {/* Duration badge */}
+          {video.duration && (
+            <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">
+              {formatDuration(video.duration)}
+            </div>
+          )}
           
-          {/* Category Badge */}
-          <div className={`absolute top-2 left-2 px-2 py-1 rounded-full text-xs border ${getCategoryColor(video.category)}`}>
-            {video.category}
-          </div>
+          {/* Progress bar */}
+          {video.progress > 0 && (
+            <div className="absolute bottom-0 left-0 right-0">
+              <ProgressBar progress={video.progress} className="h-1" />
+            </div>
+          )}
         </div>
 
         {/* Content */}
-        <div className="p-4 space-y-3">
-          <Text 
-            variant="h6" 
-            className="text-slate-200 font-medium group-hover:text-primary-400 transition-colors korean-text line-clamp-2"
+        <div className="p-4">
+          {/* Title - clickable */}
+          <button
+            onClick={() => onVideoClick(video)}
+            className="text-left w-full group-hover:text-primary-400 transition-colors"
           >
-            {video.title}
+            <Text variant="h4" className="mb-2 line-clamp-2">
+              {video.title || video.Name}
+            </Text>
+          </button>
+          
+          {/* Instructor */}
+          <Text variant="body2" className="text-surface-400 mb-3">
+            {video.instructor}
           </Text>
           
-          <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center flex-shrink-0">
-              <Text className="text-white text-xs font-bold">준</Text>
+          {/* Stats */}
+          <div className="flex items-center justify-between text-sm text-surface-500">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1">
+                <ApperIcon name="Eye" size={12} />
+                <span>{video.views?.toLocaleString() || 0}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <ApperIcon name="Star" size={12} />
+                <span>{video.rating || 0}</span>
+              </div>
             </div>
-            <Text className="text-slate-400 text-sm">
-              {video.instructor}
-            </Text>
+            
+            {/* Category badge */}
+            {video.category && (
+              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(video.category)}`}>
+                {video.category}
+              </span>
+            )}
           </div>
-
-          {/* Progress Bar */}
-          <ProgressBar 
-            progress={video.progress || 0}
-            showPercentage={true}
-            className="pt-2"
-          />
-        </div>
+</div>
       </Card>
     </motion.div>
   );
