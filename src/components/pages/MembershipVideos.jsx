@@ -30,11 +30,7 @@ const MembershipVideos = () => {
     loadVideos();
   }, []);
 
-  if (loading) return <Loading />;
-  if (error) return <Error message={error} onRetry={loadVideos} />;
-  if (videos.length === 0) return <Empty />;
-
-  return (
+return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -47,12 +43,12 @@ const MembershipVideos = () => {
           멤버십 영상실
         </Text>
         <Text className="text-slate-400 max-w-2xl mx-auto">
-<Text className="text-slate-400 max-w-2xl mx-auto">
           텍스트 인플루언서가 되기 위한 전문 교육 콘텐츠를 만나보세요
         </Text>
       </div>
 
-      {/* Video Cards Grid */}
+      {/* Content Section with Conditional Rendering */}
+      {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
             <motion.div
@@ -71,7 +67,7 @@ const MembershipVideos = () => {
               </Card>
             </motion.div>
           ))}
-        </div>
+</div>
       ) : error ? (
         <Error message={error} onRetry={loadVideos} />
       ) : !videos || videos.length === 0 ? (
