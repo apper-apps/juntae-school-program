@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import Text from "@/components/atoms/Text";
 import Card from "@/components/atoms/Card";
 import Button from "@/components/atoms/Button";
@@ -8,6 +9,7 @@ import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import ApperIcon from "@/components/ApperIcon";
+import blogPostService from "@/services/api/blogPostService";
 
 const MoneyInsights = () => {
   const navigate = useNavigate();
@@ -15,85 +17,15 @@ const MoneyInsights = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Mock data for demonstration - will be replaced with actual service
-  const mockBlogPosts = [
-    {
-      Id: 1,
-      title: "텍스트 인플루언서를 위한 첫 번째 수익화 전략",
-      description: "블로그와 소셜미디어를 활용한 기본적인 수익화 방법을 알아보세요. 광고 수익부터 제휴 마케팅까지 단계별로 설명합니다.",
-      author: "김수익",
-      publishedDate: "2024-01-15",
-      category: "기초 수익화",
-      readTime: 5,
-      views: 1250,
-      featured: true
-    },
-    {
-      Id: 2,
-      title: "브랜드 협업으로 수익 극대화하기",
-      description: "브랜드와의 성공적인 협업을 통해 안정적인 수익을 만드는 실전 노하우를 공유합니다.",
-      author: "박협업",
-      publishedDate: "2024-01-12",
-      category: "브랜드 협업",
-      readTime: 7,
-      views: 980,
-      featured: false
-    },
-    {
-      Id: 3,
-      title: "디지털 상품 판매로 passive income 만들기",
-      description: "전자책, 온라인 강의, 템플릿 등 디지털 상품을 통한 지속적인 수익 창출 방법을 알려드립니다.",
-      author: "이디지털",
-      publishedDate: "2024-01-10",
-      category: "디지털 상품",
-      readTime: 6,
-      views: 1450,
-      featured: true
-    },
-    {
-      Id: 4,
-      title: "구독 모델과 멤버십 운영 가이드",
-      description: "안정적인 월 수익을 위한 구독 서비스와 멤버십 프로그램 운영 전략을 상세히 다룹니다.",
-      author: "최구독",
-      publishedDate: "2024-01-08",
-      category: "구독 모델",
-      readTime: 8,
-      views: 750,
-      featured: false
-    },
-    {
-      Id: 5,
-      title: "텍스트 콘텐츠의 가치를 높이는 SEO 전략",
-      description: "검색 엔진 최적화를 통해 더 많은 독자에게 도달하고 수익을 증대시키는 방법을 설명합니다.",
-      author: "서최적",
-      publishedDate: "2024-01-05",
-      category: "SEO & 마케팅",
-      readTime: 9,
-      views: 1180,
-      featured: false
-    },
-    {
-      Id: 6,
-      title: "인플루언서 마케팅의 새로운 트렌드",
-      description: "2024년 텍스트 인플루언서들이 주목해야 할 마케팅 트렌드와 전략을 분석합니다.",
-      author: "트렌드킹",
-      publishedDate: "2024-01-03",
-      category: "SEO & 마케팅",
-      readTime: 6,
-      views: 892,
-      featured: false
-    }
-  ];
-
   const loadBlogPosts = async () => {
     try {
       setLoading(true);
       setError("");
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 800));
-      setBlogPosts(mockBlogPosts);
+      const posts = await blogPostService.getAll();
+      setBlogPosts(posts);
     } catch (err) {
       setError("블로그 포스트를 불러오는데 실패했습니다.");
+      console.error("Error loading blog posts:", err);
     } finally {
       setLoading(false);
     }
@@ -114,8 +46,9 @@ const MoneyInsights = () => {
     return colors[category] || "bg-slate-500/20 text-slate-400 border-slate-500/30";
   };
 
-  const handleWritePost = () => {
+const handleWritePost = () => {
     // Navigate to write post page (will be implemented)
+    toast.success("글쓰기 페이지로 이동합니다.");
     console.log("Navigate to write post page");
   };
 
