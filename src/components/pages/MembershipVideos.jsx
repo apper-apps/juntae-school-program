@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { videoService } from "@/services/api/videoService";
 import PlaceholderCard from "@/components/molecules/PlaceholderCard";
@@ -7,12 +7,15 @@ import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import Text from "@/components/atoms/Text";
 import Card from "@/components/atoms/Card";
+import Button from "@/components/atoms/Button";
+import ApperIcon from "@/components/ApperIcon";
 
 const MembershipVideos = () => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const loadVideos = async () => {
     try {
       setLoading(true);
@@ -30,7 +33,28 @@ const MembershipVideos = () => {
     loadVideos();
   }, []);
 
-return (
+// Filter videos based on search term and selected category
+  const filteredVideos = useMemo(() => {
+    if (!videos) return [];
+    
+    return videos.filter(video => {
+      const matchesSearch = searchTerm === "" || 
+        video.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        video.instructor.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesCategory = selectedCategory === "" || 
+        video.category === selectedCategory;
+      
+      return matchesSearch && matchesCategory;
+    });
+  }, [videos, searchTerm, selectedCategory]);
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setSelectedCategory("");
+  };
+
+  return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -46,6 +70,86 @@ return (
           텍스트 인플루언서가 되기 위한 전문 교육 콘텐츠를 만나보세요
         </Text>
       </div>
+
+      {/* Search and Filter Section */}
+      {!loading && !error && videos.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          className="max-w-4xl mx-auto"
+        >
+          <Card className="p-6">
+            <div className="flex flex-col sm:flex-row gap-4">
+              {/* Search Bar */}
+              <div className="relative flex-1">
+                <ApperIcon 
+                  name="Search" 
+                  size={20} 
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" 
+                />
+                <input
+                  type="text"
+                  placeholder="영상 제목이나 강사명으로 검색..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all korean-text"
+                />
+              </div>
+              
+              {/* Filter Dropdown */}
+              <div className="relative">
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="appearance-none bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 pr-10 text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all cursor-pointer"
+                >
+                  <option value="">모든 카테고리</option>
+                  <option value="기초">기초</option>
+                  <option value="중급">중급</option>
+                  <option value="고급">고급</option>
+                </select>
+                <ApperIcon 
+                  name="ChevronDown" 
+                  size={16} 
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none" 
+                />
+              </div>
+              
+              {/* Clear Filters Button */}
+              {(searchTerm || selectedCategory) && (
+                <Button
+                  variant="outline"
+                  onClick={clearFilters}
+                  className="px-4 py-3 whitespace-nowrap"
+                >
+                  <ApperIcon name="X" size={16} className="mr-2" />
+                  초기화
+                </Button>
+              )}
+            </div>
+            
+            {/* Results Summary */}
+            {(searchTerm || selectedCategory) && (
+              <div className="mt-4 pt-4 border-t border-slate-700">
+                <Text className="text-slate-400 text-sm">
+                  {filteredVideos.length}개의 영상을 찾았습니다
+                  {searchTerm && (
+                    <span className="ml-2">
+                      검색어: <span className="text-primary-400">"{searchTerm}"</span>
+                    </span>
+                  )}
+                  {selectedCategory && (
+                    <span className="ml-2">
+                      카테고리: <span className="text-primary-400">{selectedCategory}</span>
+                    </span>
+                  )}
+                </Text>
+              </div>
+            )}
+          </Card>
+        </motion.div>
+      )}
 
       {/* Content Section with Conditional Rendering */}
       {loading ? (
@@ -77,15 +181,27 @@ return (
           icon="Video"
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {videos.map((video, index) => (
-            <VideoCard
-              key={video.Id}
-              video={video}
-              index={index}
-            />
-          ))}
-        </div>
+filteredVideos.length === 0 ? (
+          <Empty 
+            title={searchTerm || selectedCategory ? "검색 결과가 없습니다" : "영상이 없습니다"}
+            description={
+              searchTerm || selectedCategory 
+                ? "다른 검색어나 필터 조건을 시도해보세요."
+                : "아직 등록된 영상이 없습니다. 곧 다양한 강의 영상이 추가될 예정입니다."
+            }
+            icon="Video"
+          />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredVideos.map((video, index) => (
+              <VideoCard
+                key={video.Id}
+                video={video}
+                index={index}
+              />
+            ))}
+          </div>
+        )
       )}
       {/* Coming Soon Features */}
       <motion.div
