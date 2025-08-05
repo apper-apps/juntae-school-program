@@ -1,14 +1,15 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { motion } from "framer-motion";
-import { videoService } from "@/services/api/videoService";
-import PlaceholderCard from "@/components/molecules/PlaceholderCard";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
-import Empty from "@/components/ui/Empty";
-import Text from "@/components/atoms/Text";
-import Card from "@/components/atoms/Card";
-import Button from "@/components/atoms/Button";
-import ApperIcon from "@/components/ApperIcon";
+import React, { useEffect, useState, useMemo } from 'react'
+import { motion } from 'framer-motion'
+import { videoService } from '@/services/api/videoService'
+import PlaceholderCard from '@/components/molecules/PlaceholderCard'
+import Loading from '@/components/ui/Loading'
+import Error from '@/components/ui/Error'
+import Empty from '@/components/ui/Empty'
+import Text from '@/components/atoms/Text'
+import Card from '@/components/atoms/Card'
+import ProgressBar from '@/components/atoms/ProgressBar'
+import Button from '@/components/atoms/Button'
+import ApperIcon from '@/components/ApperIcon'
 
 const MembershipVideos = () => {
   const [videos, setVideos] = useState([]);
@@ -192,7 +193,7 @@ filteredVideos.length === 0 ? (
             icon="Video"
           />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredVideos.map((video, index) => (
               <VideoCard
                 key={video.Id}
@@ -325,6 +326,13 @@ const VideoCard = ({ video, index }) => {
               {video.instructor}
             </Text>
           </div>
+
+          {/* Progress Bar */}
+          <ProgressBar 
+            progress={video.progress || 0}
+            showPercentage={true}
+            className="pt-2"
+          />
         </div>
       </Card>
     </motion.div>

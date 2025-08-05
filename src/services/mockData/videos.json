@@ -1,26 +1,91 @@
 [
-  {
+{
     "Id": 1,
-    "title": "텍스트 인플루언서 기초 과정",
-    "instructor": "준태 선생님",
-    "duration": 120,
-    "thumbnail": "/api/placeholder/400/225",
-    "category": "기초"
+    "title": "유튜브 수익화 기본 원리 완벽 이해",
+    "description": "유튜브 파트너 프로그램부터 애드센스 연결까지, 수익화의 모든 것을 단계별로 설명합니다.",
+    "instructor": "준태",
+    "duration": 45,
+    "category": "기초",
+    "difficulty": "초급",
+    "thumbnail": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=225&fit=crop",
+    "uploadDate": "2024-01-15",
+    "views": 1250,
+    "rating": 4.8,
+    "tags": ["수익화", "기초", "애드센스"],
+    "progress": 85
   },
-  {
+{
     "Id": 2,
-    "title": "브랜드 협업 전략과 노하우",
-    "instructor": "준태 선생님",
-    "duration": 90,
-    "thumbnail": "/api/placeholder/400/225",
-    "category": "중급"
+    "title": "구글 애드센스 최적화 전략",
+    "description": "CTR과 CPC를 높이는 실전 테크닉과 광고 배치 최적화 방법을 공유합니다.",
+    "instructor": "준태",
+    "duration": 32,
+    "category": "중급",
+    "difficulty": "중급",
+    "thumbnail": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=225&fit=crop",
+    "uploadDate": "2024-01-12",
+    "views": 980,
+    "rating": 4.7,
+    "tags": ["애드센스", "최적화", "수익증대"],
+    "progress": 45
   },
-  {
+{
     "Id": 3,
-    "title": "수익화 극대화 방법론",
-    "instructor": "준태 선생님",
-    "duration": 150,
-    "thumbnail": "/api/placeholder/400/225",
-    "category": "고급"
-  }
-]
+    "title": "유튜브 쇼츠로 빠른 수익 만들기",
+    "description": "쇼츠 알고리즘을 활용한 바이럴 콘텐츠 제작 노하우와 수익화 전략입니다.",
+    "instructor": "준태",
+    "duration": 28,
+    "category": "중급",
+    "difficulty": "중급",
+    "thumbnail": "https://images.unsplash.com/photo-1516251193007-45ef944ab0c6?w=400&h=225&fit=crop",
+    "uploadDate": "2024-01-10",
+    "views": 1520,
+    "rating": 4.9,
+    "tags": ["쇼츠", "바이럴", "빠른수익"],
+    "progress": 100
+  },
+{
+    "Id": 4,
+    "title": "채널 멤버십으로 안정적 수입 구축",
+    "description": "멤버십 티어 설정부터 혜택 구성까지, 충성도 높은 구독자 확보 방법입니다.",
+    "instructor": "준태",
+    "duration": 38,
+    "category": "고급",
+    "difficulty": "고급",
+    "thumbnail": "https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=400&h=225&fit=crop",
+    "uploadDate": "2024-01-08",
+    "views": 756,
+    "rating": 4.6,
+    "tags": ["멤버십", "안정수입", "구독자관리"],
+    "progress": 20
+  },
+{
+    "Id": 5,
+    "title": "브랜드 협찬 계약의 모든 것",
+    "description": "협찬 제안서 작성부터 계약 체결까지, 브랜드와 윈윈하는 협상 전략을 알려드립니다.",
+    "instructor": "준태",
+    "duration": 52,
+    "category": "고급",
+    "difficulty": "고급",
+    "thumbnail": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=225&fit=crop",
+    "uploadDate": "2024-01-05",
+    "views": 634,
+    "rating": 4.8,
+    "tags": ["브랜드협찬", "계약", "협상"],
+    "progress": 0
+  },
+{
+    "Id": 6,
+    "title": "유튜브 분석 도구 완전 정복",
+    "description": "유튜브 스튜디오 분석 데이터를 해석하고 채널 성장에 활용하는 실전 방법론입니다.",
+    "instructor": "준태",
+    "duration": 41,
+    "category": "중급",
+    "difficulty": "중급",
+    "thumbnail": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=225&fit=crop",
+    "uploadDate": "2024-01-03",
+    "views": 892,
+    "rating": 4.7,
+    "tags": ["분석도구", "데이터해석", "채널성장"],
+    "progress": 65
+  }]
